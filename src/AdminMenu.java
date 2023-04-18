@@ -1,7 +1,118 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
 public class AdminMenu {
 
+    private Scanner input;
+    private ArrayList<Flight> flight;
+
+    public void mainAdminMenu() {
+
+        boolean choise = true;
+        while (choise == true) {
+
+            System.out.println();
+            System.out.println("===================================================");
+            System.out.println("=================== Admin menu ====================");
+            System.out.println("===================================================");
+            System.out.println();
+            System.out.println("    <1> Add Flight");
+            System.out.println("    <2> Update Flights");
+            System.out.println("    <3> Remove Flights");
+            System.out.println("    <4> Flight Schedule");
+            System.out.println("    <0> Sign Out");
+            System.out.println(" >>>>  ");
+            int choiseAdminMenu = input.nextInt();
+            input.nextLine();
+            switch (choiseAdminMenu) {
+                case 1:
+                    addFlight();
+                    break;
+                case 2:
+                    System.out.println("Enter the flight id that you wish to change: ");
+                    String flightIdSearcher01 = input.nextLine();
+                    updateFlight(String flightIdSearcher01);
+                    break;
+                case 3:
+                    System.out.println("Enter the flight id that you wish to change: ");
+                    String flightIdSearcher02 = input.nextLine();
+                    removeFlight();
+                    break;
+                case 4:
+                    viewFlightSchedules();
+                case 0:
+                    choise = false;
+                    break;
+                default:
+                    System.out.println("pls enter a valid number :)");
+                    break;
+            }
+
+        }
+    }
     public void addFlight () {
-        Flight flight1 = new Flight();
-        
+        System.out.println("---------------------------------------");
+        System.out.println("------------Add flight menu------------");
+        System.out.println("---------------------------------------");
+        System.out.println();
+        Flight flight01 = new Flight();
+        System.out.println("Enter flight Id: ");
+        flight01.setFlightId(input.nextLine());
+        System.out.println("Enter flight Origin: ");
+        flight01.setOrigin(input.nextLine());
+        System.out.println("Enter flight Destination: ");
+        flight01.setDestination(input.nextLine());
+        System.out.println("Enter flight time: ");
+        System.out.println("hour: ");
+        flight01.setHour(input.nextInt());
+        input.nextLine();
+        System.out.println("min: ");
+        flight01.setMin(input.nextInt());
+        input.nextLine();
+        System.out.println("Enter flight date: ");
+        flight01.setDate(input.nextLine());
+        System.out.println("Enter flight seats: ");
+        flight01.setMin(input.nextInt());
+        input.nextLine();
+        System.out.println("Enter flight price: ");
+        flight01.setPrice(input.nextInt());
+        input.nextLine();
+        flight.add(flight01);
+        // the last line needs to be tested
+    }
+
+    public void updateFlight (String flightIdSearcher) {
+        for (int i = 0; i < flight.size(); i++) {
+            if (flightIdSearcher.equals(flight.get(i).getFlightId())) {
+                System.out.println(flight);
+                System.out.println("which part do you wish to change?");
+                System.out.println("""
+                         <1> Origin
+                        <2> Destination
+                        <3> Date
+                        <4> Time
+                        <5> Price
+                        <6> Seats
+                        """);
+                break;
+            } else if (flight.size() == i) {
+                System.out.println("Flight not found");
+            } else {
+                // nothing
+            }
+
+        }
+    }
+
+
+
+    public void removeFlight () {
+
+    }
+
+    public void viewFlightSchedules () {
+//        for (int i = 0; i < flight; i++) {
+//
+//        }
     }
 }
