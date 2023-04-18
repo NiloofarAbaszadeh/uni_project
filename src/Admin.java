@@ -2,5 +2,9 @@ import java.sql.SQLOutput;
 
 public class Admin {
 
-     System.out.println();
+     private String Name = "Admin";
+     private String Password = "admin";
+
+
+
 }
