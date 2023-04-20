@@ -37,6 +37,7 @@ public class AdminMenu {
                     break;
                 case 4:
                     viewFlightSchedules(flight);
+                    break;
                 case 0:
                     choise = false;
                     break;
@@ -111,6 +112,7 @@ public class AdminMenu {
                 switch (changeFilter) {
                     case 1:
                         System.out.printf("old origin: " + flight.get(i).getOrigin());
+                        System.out.println();
                         System.out.println("pls enter the new Origin:");
                         flight.get(i).setOrigin(input.nextLine());
                         loopControl = false;
@@ -186,7 +188,7 @@ public class AdminMenu {
     }
     public void viewFlightSchedules (ArrayList<Flight> flight) {
         for (int i = 0; i < flight.size(); i++) {
-            System.out.println(flight);
+            System.out.println(flight.get(i));
         }
     }
 }

@@ -3,11 +3,12 @@ import java.util.ArrayList;
 
 public class StartMenu {
 
-    public void menu (Scanner input,ArrayList<Flight> flight) {
+    public void menu (Scanner input, ArrayList<Flight> flight, ArrayList<Passenger> passengers) {
 
-        int ChoseMenu = 0;
-        while (ChoseMenu == 0) {
 
+        while (true) {
+
+            int ChoseMenu = 0;
             printMainMenu();
             ChoseMenu = input.nextInt();
             input.nextLine();
@@ -24,21 +25,34 @@ public class StartMenu {
                 if (ActiveUserName.equals("Admin") && ActiveUserPassword.equals("admin")) {
                     AdminMenu adminMenu = new AdminMenu();
                     adminMenu.mainAdminMenu(input,flight);
-
                 }
+                for (int i = 0; i < passengers.size(); i++) {
+                    if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
+                        if (ActiveUserPassword.equals(passengers.get(i).getPassengerPassword())) {
+                            PassengerMenu passengerMenu = new PassengerMenu();
+                            passengerMenu.mainPassengerMenu(ActiveUserName, input, flight);
+                            System.out.println();
+                        }
+                    }
+                }
+
 
             } else if (ChoseMenu == 2) {
                 // Sign up menu
                 System.out.println("Enter the new user`s name");
                 System.out.print(">>>> ");
-
+                String newUserName = input.nextLine();
+                System.out.println("Enter the new user`s Password");
+                System.out.print(">>>> ");
+                String newUserPassword = input.nextLine();
+                Passenger passengers01 = new Passenger(newUserName, newUserPassword);
+                passengers.add(passengers01);
             } else {
                 ChoseMenu = 0;
                 System.out.println("please chose a valid number");
             }
         }
     }
-
     public void printMainMenu () {
 
         // Starting menu
@@ -47,11 +61,10 @@ public class StartMenu {
         System.out.println("===================================================");
         System.out.println();
         System.out.println("<1> Sign in");
-        System.out.println("<1> Sign up");
+        System.out.println("<2> Sign up");
         System.out.println();
         System.out.print(">>>> ");
     }
-
     public void addFirstTenFlights (ArrayList<Flight> flight) {
         Flight flight01 = new Flight("WX-09","Tehran","Qazvin",1,45 ,"1402-01-03",45 ,95);
         flight01.setOriginalSeats(flight01.getSeat());
@@ -85,8 +98,5 @@ public class StartMenu {
         flight.add(flight10);
 
     }
-
-
-
 
 }

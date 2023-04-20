@@ -1,7 +1,12 @@
 public class Passenger {
 
     private String PassengerName;
-    private String Password;
+    private String PassengerPassword;
+
+    public Passenger(String passengerName, String passengerPassword) {
+        PassengerName = passengerName;
+        PassengerPassword = passengerPassword;
+    }
 
     public String getPassengerName() {
         return PassengerName;
@@ -11,19 +16,19 @@ public class Passenger {
         PassengerName = passengerName;
     }
 
-    public String getPassword() {
-        return Password;
+    public String getPassengerPassword() {
+        return PassengerPassword;
     }
 
-    public void setPassword(String password) {
-        Password = password;
+    public void setPassengerPassword(String passengerPassword) {
+        PassengerPassword = passengerPassword;
     }
 
     @Override
     public String toString() {
         return "Passenger{" +
                 "PassengerName='" + PassengerName + '\'' +
-                ", Password='" + Password + '\'' +
+                ", PassengerPassword='" + PassengerPassword + '\'' +
                 '}';
     }
 }

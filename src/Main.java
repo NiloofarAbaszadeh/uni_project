@@ -5,10 +5,12 @@ public class Main {
     public static void main(String[] args) {
 
         ArrayList<Flight> flight = new ArrayList();
+        ArrayList<Passenger> passengers = new ArrayList();
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();
-        startMenu.menu(input,flight);
         startMenu.addFirstTenFlights (flight);
+        startMenu.menu(input,flight,passengers);
+
 
     }
 }
