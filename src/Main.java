@@ -6,8 +6,10 @@ public class Main {
 
         ArrayList<Flight> flight = new ArrayList();
         ArrayList<Passenger> passengers = new ArrayList();
+        ArrayList<Tickets> tickets = new ArrayList();
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();
+
         startMenu.addFirstTenFlights (flight);
         startMenu.menu(input,flight,passengers);
 
