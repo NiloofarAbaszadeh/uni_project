@@ -8,6 +8,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();
         startMenu.menu(input,flight);
+        startMenu.addFirstTenFlights (flight);
 
     }
 }

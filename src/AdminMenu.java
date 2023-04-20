@@ -33,7 +33,7 @@ public class AdminMenu {
                 case 3:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher02 = input.nextLine();
-                    removeFlight(input, flight, flightIdSearcher02);
+                    removeFlight(flight, flightIdSearcher02);
                     break;
                 case 4:
                     viewFlightSchedules(flight);
@@ -52,35 +52,47 @@ public class AdminMenu {
         System.out.println("------------Add flight menu------------");
         System.out.println("---------------------------------------");
         System.out.println();
-        Flight flight01 = new Flight();
+
         System.out.println("Enter flight Id: ");
-        flight01.setFlightId(input.nextLine());
+        String flightId = input.nextLine();
+
         System.out.println("Enter flight Origin: ");
-        flight01.setOrigin(input.nextLine());
+        String Origin = input.nextLine();
+
         System.out.println("Enter flight Destination: ");
-        flight01.setDestination(input.nextLine());
+        String Destination = input.nextLine();
+
         System.out.println("Enter flight time: ");
         System.out.println("hour: ");
-        flight01.setHour(input.nextInt());
+        int Hour = input.nextInt();
         input.nextLine();
         System.out.println("min: ");
-        flight01.setMin(input.nextInt());
+        int Min = input.nextInt();
+
         input.nextLine();
         System.out.println("Enter flight date: ");
-        flight01.setDate(input.nextLine());
+
+        String Date = input.nextLine();
         System.out.println("Enter flight seats: ");
-        flight01.setMin(input.nextInt());
+        int Seat = input.nextInt();
+
         input.nextLine();
         System.out.println("Enter flight price: ");
-        flight01.setPrice(input.nextInt());
+        double Price = input.nextDouble();
         input.nextLine();
+
+        Flight flight01 = new Flight(flightId,Origin,Destination,Hour,Min,Date,Seat,Price);
+        flight01.setOriginalSeats(Seat);
         flight.add(flight01);
         // the last line needs to be tested
     }
-
     public void updateFlight (String flightIdSearcher, Scanner input, ArrayList<Flight> flight) {
         for (int i = 0; i < flight.size(); i++) {
             if (flightIdSearcher.equals(flight.get(i).getFlightId())) {
+                if (flight.get(i).getSeat() != flight.get(i).getOriginalSeats()) {
+                    System.out.println("you can`t update this flight because some one has already reserved it");
+                    break;
+                }
                 System.out.println(flight);
                 System.out.println("which part do you wish to change?");
                 System.out.println("""
@@ -140,7 +152,7 @@ public class AdminMenu {
                         int newSeats = input.nextInt();
                         input.nextLine();
                         flight.get(i).setSeat(newSeats);
-                        final int SEAT_ORIGINAL = newSeats;
+                        flight.get(i).setOriginalSeats(newSeats);
                         loopControl = false;
                         break;
                     default:
@@ -156,9 +168,13 @@ public class AdminMenu {
 
         }
     }
-    public void removeFlight (Scanner input, ArrayList<Flight> flight, String flightIdSearcher02) {
+    public void removeFlight (ArrayList<Flight> flight, String flightIdSearcher02) {
         for (int i = 0; i < flight.size(); i++) {
             if (flightIdSearcher02.equals(flight.get(i).getFlightId())) {
+                if (flight.get(i).getSeat() != flight.get(i).getOriginalSeats()) {
+                    System.out.println("you can`t remove this flight because some one has already reserved it");
+                    break;
+                }
                 flight.remove(i);
                 System.out.println("the flight has ben successfully removed");
             } else if (flight.size() == i) {

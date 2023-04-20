@@ -8,7 +8,27 @@ public class Flight {
     private int min;
     private String date;
     private int seat;
+    private int originalSeats;
     private double price;
+
+    public Flight(String flightId, String origin, String destination, int hour, int min, String date, int seat, double price) {
+        this.flightId = flightId;
+        this.origin = origin;
+        this.destination = destination;
+        this.hour = hour;
+        this.min = min;
+        this.date = date;
+        this.seat = seat;
+        this.price = price;
+    }
+
+    public int getOriginalSeats() {
+        return originalSeats;
+    }
+
+    public void setOriginalSeats(int originalSeats) {
+        this.originalSeats = originalSeats;
+    }
 
     public String getFlightId() {
         return flightId;
@@ -64,7 +84,6 @@ public class Flight {
 
     public void setSeat(int seat) {
         this.seat = seat;
-        // final int SEAT_ORIGINAL = seat;
     }
 
     public double getPrice() {
