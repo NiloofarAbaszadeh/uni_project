@@ -7,7 +7,7 @@ public class Main {
         ArrayList<Flight> flight = new ArrayList();
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();
-        Object ArrayList;
+       // Object ArrayList;
         startMenu.menu();
 
     }

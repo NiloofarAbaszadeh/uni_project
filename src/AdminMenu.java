@@ -31,7 +31,7 @@ public class AdminMenu {
                 case 2:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher01 = input.nextLine();
-                    updateFlight(String flightIdSearcher01);
+                    updateFlight(flightIdSearcher01);
                     break;
                 case 3:
                     System.out.println("Enter the flight id that you wish to change: ");
@@ -88,12 +88,67 @@ public class AdminMenu {
                 System.out.println("which part do you wish to change?");
                 System.out.println("""
                          <1> Origin
-                        <2> Destination
-                        <3> Date
-                        <4> Time
-                        <5> Price
-                        <6> Seats
+                         <2> Destination
+                         <3> Date
+                         <4> Time
+                         <5> Price
+                         <6> Seats
+                          >>>
                         """);
+                int changeFilter = input.nextInt();
+                input.nextLine();
+                boolean loopControl = true;
+                while (loopControl == true) {
+                switch (changeFilter) {
+                    case 1:
+                        System.out.printf("old origin: " + flight.get(i).getOrigin());
+                        System.out.println("pls enter the new Origin:");
+                        flight.get(i).setOrigin(input.nextLine());
+                        loopControl = false;
+                        break;
+                    case 2:
+                        System.out.printf("old Destination: " + flight.get(i).getDestination());
+                        System.out.println("pls enter the new Destination:");
+                        flight.get(i).setDestination(input.nextLine());
+                        loopControl = false;
+                        break;
+                    case 3:
+                        System.out.printf("old Date:" + flight.get(i).getDate());
+                        System.out.println("pls enter the new Date:");
+                        flight.get(i).setDate(input.nextLine());
+                        loopControl = false;
+                        break;
+                    case 4:
+                        System.out.println("old time: ");
+                        System.out.printf("hour: " + flight.get(i).getHour());
+                        System.out.printf("min: " + flight.get(i).getMin());
+                        System.out.println("pls enter the new time:");
+                        int newHour = input.nextInt();
+                        input.nextLine();
+                        flight.get(i).setHour(newHour);
+                        int newMin = input.nextInt();
+                        input.nextLine();
+                        flight.get(i).setMin(newMin);
+                        loopControl = false;
+                        break;
+                    case 5:
+                        System.out.printf("old price: " + flight.get(i).getPrice());
+                        System.out.println("pls enter the new Origin:");
+                        flight.get(i).setPrice(input.nextDouble());
+                        loopControl = false;
+                        break;
+                    case 6:
+                        System.out.printf("old seats: " + flight.get(i).getSeat());
+                        System.out.println("pls enter the new Seats:");
+                        int newSeats = input.nextInt();
+                        input.nextLine();
+                        flight.get(i).setSeat(newSeats);
+                        loopControl = false;
+                        break;
+                    default:
+                        System.out.println("pls enter a valid number");
+                    }
+                }
                 break;
             } else if (flight.size() == i) {
                 System.out.println("Flight not found");
@@ -103,9 +158,6 @@ public class AdminMenu {
 
         }
     }
-
-
-
     public void removeFlight () {
 
     }
