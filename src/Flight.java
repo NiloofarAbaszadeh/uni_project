@@ -64,6 +64,7 @@ public class Flight {
 
     public void setSeat(int seat) {
         this.seat = seat;
+        // final int SEAT_ORIGINAL = seat;
     }
 
     public double getPrice() {

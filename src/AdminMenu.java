@@ -3,13 +3,10 @@ import java.util.Scanner;
 
 public class AdminMenu {
 
-    private Scanner input;
-    private ArrayList<Flight> flight;
-
-    public void mainAdminMenu() {
+    public void mainAdminMenu(Scanner input,ArrayList<Flight> flight) {
 
         boolean choise = true;
-        while (choise == true) {
+        while (choise) {
 
             System.out.println();
             System.out.println("===================================================");
@@ -26,20 +23,20 @@ public class AdminMenu {
             input.nextLine();
             switch (choiseAdminMenu) {
                 case 1:
-                    addFlight();
+                    addFlight(input,flight);
                     break;
                 case 2:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher01 = input.nextLine();
-                    updateFlight(flightIdSearcher01);
+                    updateFlight(flightIdSearcher01,input,flight);
                     break;
                 case 3:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher02 = input.nextLine();
-                    removeFlight();
+                    removeFlight(input, flight, flightIdSearcher02);
                     break;
                 case 4:
-                    viewFlightSchedules();
+                    viewFlightSchedules(flight);
                 case 0:
                     choise = false;
                     break;
@@ -50,7 +47,7 @@ public class AdminMenu {
 
         }
     }
-    public void addFlight () {
+    public void addFlight (Scanner input, ArrayList<Flight> flight) {
         System.out.println("---------------------------------------");
         System.out.println("------------Add flight menu------------");
         System.out.println("---------------------------------------");
@@ -81,7 +78,7 @@ public class AdminMenu {
         // the last line needs to be tested
     }
 
-    public void updateFlight (String flightIdSearcher) {
+    public void updateFlight (String flightIdSearcher, Scanner input, ArrayList<Flight> flight) {
         for (int i = 0; i < flight.size(); i++) {
             if (flightIdSearcher.equals(flight.get(i).getFlightId())) {
                 System.out.println(flight);
@@ -98,7 +95,7 @@ public class AdminMenu {
                 int changeFilter = input.nextInt();
                 input.nextLine();
                 boolean loopControl = true;
-                while (loopControl == true) {
+                while (loopControl) {
                 switch (changeFilter) {
                     case 1:
                         System.out.printf("old origin: " + flight.get(i).getOrigin());
@@ -143,6 +140,7 @@ public class AdminMenu {
                         int newSeats = input.nextInt();
                         input.nextLine();
                         flight.get(i).setSeat(newSeats);
+                        final int SEAT_ORIGINAL = newSeats;
                         loopControl = false;
                         break;
                     default:
@@ -158,13 +156,21 @@ public class AdminMenu {
 
         }
     }
-    public void removeFlight () {
-
+    public void removeFlight (Scanner input, ArrayList<Flight> flight, String flightIdSearcher02) {
+        for (int i = 0; i < flight.size(); i++) {
+            if (flightIdSearcher02.equals(flight.get(i).getFlightId())) {
+                flight.remove(i);
+                System.out.println("the flight has ben successfully removed");
+            } else if (flight.size() == i) {
+                System.out.println("Flight not found");
+            } else {
+                // nothing
+            }
+        }
     }
-
-    public void viewFlightSchedules () {
-//        for (int i = 0; i < flight; i++) {
-//
-//        }
+    public void viewFlightSchedules (ArrayList<Flight> flight) {
+        for (int i = 0; i < flight.size(); i++) {
+            System.out.println(flight);
+        }
     }
 }

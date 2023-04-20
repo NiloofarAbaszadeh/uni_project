@@ -3,15 +3,15 @@ import java.util.ArrayList;
 
 public class StartMenu {
 
-    private Scanner input;
     private ArrayList<Flight> flight;
-    public void menu () {
+    public void menu (Scanner input,ArrayList<Flight> flight) {
 
         int ChoseMenu = 0;
         while (ChoseMenu == 0) {
 
             printMainMenu();
             ChoseMenu = input.nextInt();
+            input.nextLine();
 
             if (ChoseMenu == 1) {
                 // Sign in menu
@@ -24,7 +24,7 @@ public class StartMenu {
                 String ActiveUserPassword = input.nextLine();
                 if (ActiveUserName.equals("Admin") && ActiveUserPassword.equals("admin")) {
                     AdminMenu adminMenu = new AdminMenu();
-                    adminMenu.mainAdminMenu();
+                    adminMenu.mainAdminMenu(input,flight);
 
                 }
 
