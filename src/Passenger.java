@@ -2,6 +2,15 @@ public class Passenger {
 
     private String PassengerName;
     private String PassengerPassword;
+    private int price;
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     public Passenger(String passengerName, String passengerPassword) {
         PassengerName = passengerName;

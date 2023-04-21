@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class StartMenu {
 
-    public void menu (Scanner input, ArrayList<Flight> flight, ArrayList<Passenger> passengers) {
+    public void menu (Scanner input, ArrayList<Flight> flight, ArrayList<Passenger> passengers, ArrayList<Tickets> tickets) {
 
 
         while (true) {
@@ -30,10 +30,14 @@ public class StartMenu {
                     if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
                         if (ActiveUserPassword.equals(passengers.get(i).getPassengerPassword())) {
                             PassengerMenu passengerMenu = new PassengerMenu();
-                            passengerMenu.mainPassengerMenu(ActiveUserName, input, flight);
+                            passengerMenu.mainPassengerMenu(ActiveUserName, input, flight, passengers, tickets);
                             System.out.println();
                         }
+                    } else if (passengers.size() == i) {
+                        System.out.println("User not found");
+                        System.out.println();
                     }
+
                 }
 
 

@@ -11,7 +11,7 @@ public class Main {
         StartMenu startMenu = new StartMenu();
 
         startMenu.addFirstTenFlights (flight);
-        startMenu.menu(input,flight,passengers);
+        startMenu.menu(input,flight,passengers,tickets);
 
 
     }
