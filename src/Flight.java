@@ -9,9 +9,9 @@ public class Flight {
     private String date;
     private int seat;
     private int originalSeats;
-    private double price;
+    private int price;
 
-    public Flight(String flightId, String origin, String destination, int hour, int min, String date, int seat, double price) {
+    public Flight(String flightId, String origin, String destination, int hour, int min, String date, int seat, int price) {
         this.flightId = flightId;
         this.origin = origin;
         this.destination = destination;
@@ -86,11 +86,11 @@ public class Flight {
         this.seat = seat;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

@@ -35,16 +35,16 @@ public class PassengerMenu {
                     searchFlightTickets (input, flight);
                     break;
                 case 3:
-                    bookingTickets (input, flight, ActiveUserName, tickets);
+                    bookingTickets (input, flight, ActiveUserName, tickets, passengers);
                     break;
                 case 4:
-
+                    ticketCancellation (input, ActiveUserName,tickets,passengers);
                     break;
                 case 5:
                     bookedTickets (ActiveUserName, tickets);
                     break;
                 case 6:
-                    addCharge (ActiveUserName, passengers);
+                    addCharge (ActiveUserName, passengers, input);
                     break;
                 case 0:
                     choise = 0;
@@ -58,16 +58,106 @@ public class PassengerMenu {
         }
     }
 
+    private void ticketCancellation(Scanner input, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
+        for (int i = 0; i < passengers.size(); i++) {
+            if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
+                System.out.println("pls enter the flight id that you wish to cancel: ");
+                String cancelFlightId = input.nextLine();
+                for (int j = 0; j < tickets.size(); j++) {
+                    if (tickets.get(i).getBoughtFlightId().equals(cancelFlightId)) {
+                        System.out.println(tickets);
+                        System.out.println("""
+                                do you wish to cancel it?
+                                <1> Yes
+                                <2> No
+                                """);
+                        int coise01 = input.nextInt();
+                        input.nextLine();
+                        if (coise01 == 1) {
+                            passengers.get(i).setPrice(tickets.get(j).getUsedPrice() + passengers.get(i).getPrice());
+                            tickets.remove(i);
+                            System.out.println("Done");
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void bookedTickets(String activeUserName, ArrayList<Tickets> tickets) {
-
+        for (int i = 0; i < tickets.size(); i++) {
+            if (tickets.get(i).getBoughTicketUser().equals(activeUserName)) {
+                System.out.println(tickets);
+            }
+        }
+        System.out.println();
     }
 
-    private void addCharge(String activeUserName, ArrayList<Passenger> passengers) {
+    private void addCharge(String activeUserName, ArrayList<Passenger> passengers, Scanner input) {
+        for (int i = 0; i < passengers.size(); i++) {
+            if (activeUserName.equals(passengers.get(i).getPassengerName())) {
+                System.out.printf("your cornet charge is: " + passengers.get(i).getPrice());
+                System.out.println();
+                System.out.println("how mach do you want to add to your charge? ");
+                System.out.println("your charge needs to be more then 0 :), its your problem if you make a mistake");
+                int addPrice = input.nextInt();
+                input.nextLine();
+                int cornetCharge = passengers.get(i).getPrice();
+                passengers.get(i).setPrice(cornetCharge + addPrice);
+                System.out.println("Done");
 
+            }
+        }
     }
 
-    private void bookingTickets(Scanner input, ArrayList<Flight> flight, String activeUserName, ArrayList<Tickets> tickets) {
+    private void bookingTickets(Scanner input, ArrayList<Flight> flight, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
+        for (int i = 0; i < passengers.size(); i++) {
+            if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
+                System.out.println("pls enter the flight id that you want to buy: ");
+                String buyFlight = input.nextLine();
+                for (int j = 0; j < flight.size(); j++) {
+                    if (flight.get(j).getFlightId().equals(buyFlight)) {
+                        System.out.println(flight.get(j));
+                        System.out.println("how many seats do you want? ");
+                        int buySeats = input.nextInt();
+                        input.nextLine();
+                        if (buySeats <= flight.get(j).getSeat()) {
+                            int buyPrice = flight.get(j).getPrice() * buySeats;
+                            System.out.printf("the price will be: " + buyPrice);
+                            System.out.println();
+                            System.out.printf("your charge is: " + passengers.get(j).getPrice());
+                            System.out.println();
+                            System.out.println("dou you wish to buy it? ");
+                            System.out.println("""
+                                    <1> Yes
+                                    <2> NO
+                                    """);
+                            int choise = input.nextInt();
+                            input.nextLine();
+                            if (choise == 1) {
+                                if (buyPrice <= flight.get(j).getPrice()) {
+                                    int afterCharge = passengers.get(i).getPrice() - buyPrice;
+                                    flight.get(j).setPrice(afterCharge);
+                                    Tickets tickets1 = new Tickets(1000+i,ActiveUserName,flight.get(j).getFlightId(),buyPrice);
+                                    tickets.add(tickets1);
+                                    System.out.println("Done");
+                                } else {
+                                    System.out.println("your charge is not enough :(");
+                                    break;
+                                }
 
+                            } else {
+                                break;
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void searchFlightTickets(Scanner input, ArrayList<Flight> flight) {

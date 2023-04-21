@@ -1,20 +1,30 @@
 public class Tickets {
 
-    private String boughtTicketCode;
+    private int boughtTicketCode;
     private String boughTicketUser;
     private String boughtFlightId;
+    private int usedPrice;
 
-    public Tickets(String boughtTicketCode, String boughTicketUser, String boughtFlightId) {
+    public Tickets(int boughtTicketCode, String boughTicketUser, String boughtFlightId, int usedPrice) {
         this.boughtTicketCode = boughtTicketCode;
         this.boughTicketUser = boughTicketUser;
         this.boughtFlightId = boughtFlightId;
+        this.usedPrice = usedPrice;
     }
 
-    public String getBoughtTicketCode() {
+    public int getUsedPrice() {
+        return usedPrice;
+    }
+
+    public void setUsedPrice(int usedPrice) {
+        this.usedPrice = usedPrice;
+    }
+
+    public int getBoughtTicketCode() {
         return boughtTicketCode;
     }
 
-    public void setBoughtTicketCode(String boughtTicketCode) {
+    public void setBoughtTicketCode(int boughtTicketCode) {
         this.boughtTicketCode = boughtTicketCode;
     }
 

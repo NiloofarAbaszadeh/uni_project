@@ -79,7 +79,7 @@ public class AdminMenu {
 
         input.nextLine();
         System.out.println("Enter flight price: ");
-        double Price = input.nextDouble();
+        int Price = input.nextInt();
         input.nextLine();
 
         Flight flight01 = new Flight(flightId,Origin,Destination,Hour,Min,Date,Seat,Price);
@@ -145,7 +145,7 @@ public class AdminMenu {
                     case 5:
                         System.out.printf("old price: " + flight.get(i).getPrice());
                         System.out.println("pls enter the new Origin:");
-                        flight.get(i).setPrice(input.nextDouble());
+                        flight.get(i).setPrice(input.nextInt());
                         loopControl = false;
                         break;
                     case 6:
