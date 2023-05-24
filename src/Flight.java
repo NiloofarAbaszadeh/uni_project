@@ -19,6 +19,7 @@ public class Flight {
         this.min = min;
         this.date = date;
         this.seat = seat;
+        this.originalSeats = seat;
         this.price = price;
     }
 
@@ -94,6 +95,86 @@ public class Flight {
         this.price = price;
     }
 
+    public void addFlightToFile (String flightId, String origin, String destination, int hour, int min, String date, int seat, int price) {
+        // todo : write on Flight file
+
+    }
+    public String fixFlightId () {
+
+        for (int i = 0; i < 6; i++) {
+            if (flightId.length() <= 6) {
+                flightId += " ";
+            } else {
+                return flightId;
+            }
+        }
+        return null;
+    }
+    public String fixOrigin () {
+
+        for (int i = 0; i < 10; i++) {
+            if (origin.length() <= 10) {
+                origin += " ";
+            } else {
+                return origin;
+            }
+        }
+        return null;
+    }
+    public String fixDestination () {
+
+        for (int i = 0; i < 10; i++) {
+            if (destination.length() <= 10) {
+                destination += " ";
+            } else {
+                return destination;
+            }
+        }
+        return null;
+    }
+    public String fixTime () {
+        String time = hour + " : " + min;
+        for (int i = 0; i < 8; i++) {
+            if (time.length() <= 8) {
+                time += " ";
+            } else {
+                return time;
+            }
+        }
+        return null;
+    }
+    public String fixDate () {
+        for (int i = 0; i < 12; i++) {
+            if (date.length() <= 12) {
+                date += " ";
+            } else {
+                return date;
+            }
+        }
+        return null;
+    }
+    public String fixSeat () {
+        String stringSeat = String.valueOf(seat);
+        for (int i = 0; i < 6; i++) {
+            if (stringSeat.length() <= 6) {
+                stringSeat += " ";
+            } else {
+                return stringSeat;
+            }
+        }
+        return null;
+    }
+    public String fixPrice () {
+        String stringPrice = String.valueOf(price);
+        for (int i = 0; i < 15; i++) {
+            if (stringPrice.length() <= 15) {
+                stringPrice += " ";
+            } else {
+                return stringPrice;
+            }
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return "Flight{" +

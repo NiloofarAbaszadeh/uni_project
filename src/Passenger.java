@@ -1,8 +1,8 @@
 public class Passenger {
 
-    private String PassengerName;
-    private String PassengerPassword;
-    private int price;
+    protected String PassengerName;
+    protected String PassengerPassword;
+    protected int price;
 
     public int getPrice() {
         return price;
@@ -33,6 +33,27 @@ public class Passenger {
         PassengerPassword = passengerPassword;
     }
 
+    public String fixUserName () {
+        for (int i = 0; i < 15; i++) {
+            if (PassengerName.length() <= 15) {
+                PassengerName += " ";
+            } else {
+                return PassengerName;
+            }
+        }
+        return null;
+    }
+
+    public String fixUserPassword () {
+        for (int i = 0; i < 15; i++) {
+            if (PassengerPassword.length() <= 15) {
+                PassengerPassword += " ";
+            } else {
+                return PassengerPassword;
+            }
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return "Passenger{" +

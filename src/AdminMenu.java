@@ -125,7 +125,7 @@ public class AdminMenu {
                         break;
                     case 3:
                         System.out.printf("old Date:" + flight.get(i).getDate());
-                        System.out.println("pls enter the new Date:");
+                        System.out.println("pls enter the new Date (Sample: 1402/01/12): ");
                         flight.get(i).setDate(input.nextLine());
                         loopControl = false;
                         break;

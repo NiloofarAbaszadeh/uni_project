@@ -112,6 +112,7 @@ public class PassengerMenu {
         }
     }
 
+
     private void bookingTickets(Scanner input, ArrayList<Flight> flight, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
         for (int i = 0; i < passengers.size(); i++) {
             if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
@@ -129,7 +130,7 @@ public class PassengerMenu {
                             System.out.println();
                             System.out.printf("your charge is: " + passengers.get(j).getPrice());
                             System.out.println();
-                            System.out.println("dou you wish to buy it? ");
+                            System.out.println("do you wish to buy it? ");
                             System.out.println("""
                                     <1> Yes
                                     <2> NO
