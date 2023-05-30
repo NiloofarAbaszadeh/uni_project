@@ -105,7 +105,7 @@ public class Flight {
             if (flightId.length() <= 6) {
                 flightId += " ";
             } else {
-                return flightId;
+                return flightId.substring(0,6);
             }
         }
         return null;
@@ -116,7 +116,7 @@ public class Flight {
             if (origin.length() <= 10) {
                 origin += " ";
             } else {
-                return origin;
+                return origin.substring(0,10);
             }
         }
         return null;
@@ -127,18 +127,7 @@ public class Flight {
             if (destination.length() <= 10) {
                 destination += " ";
             } else {
-                return destination;
-            }
-        }
-        return null;
-    }
-    public String fixTime () {
-        String time = hour + " : " + min;
-        for (int i = 0; i < 8; i++) {
-            if (time.length() <= 8) {
-                time += " ";
-            } else {
-                return time;
+                return destination.substring(0,10);
             }
         }
         return null;
@@ -148,29 +137,7 @@ public class Flight {
             if (date.length() <= 12) {
                 date += " ";
             } else {
-                return date;
-            }
-        }
-        return null;
-    }
-    public String fixSeat () {
-        String stringSeat = String.valueOf(seat);
-        for (int i = 0; i < 6; i++) {
-            if (stringSeat.length() <= 6) {
-                stringSeat += " ";
-            } else {
-                return stringSeat;
-            }
-        }
-        return null;
-    }
-    public String fixPrice () {
-        String stringPrice = String.valueOf(price);
-        for (int i = 0; i < 15; i++) {
-            if (stringPrice.length() <= 15) {
-                stringPrice += " ";
-            } else {
-                return stringPrice;
+                return date.substring(0,12);
             }
         }
         return null;

@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class Passenger {
 
     protected String PassengerName;
@@ -38,7 +40,7 @@ public class Passenger {
             if (PassengerName.length() <= 15) {
                 PassengerName += " ";
             } else {
-                return PassengerName;
+                return PassengerName.substring(0,15);
             }
         }
         return null;
@@ -49,7 +51,7 @@ public class Passenger {
             if (PassengerPassword.length() <= 15) {
                 PassengerPassword += " ";
             } else {
-                return PassengerPassword;
+                return PassengerPassword.substring(0,15);
             }
         }
         return null;

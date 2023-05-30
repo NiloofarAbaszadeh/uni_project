@@ -1,9 +1,11 @@
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminMenu {
 
-    public void mainAdminMenu(Scanner input,ArrayList<Flight> flight) {
+    public void mainAdminMenu(Scanner input,ArrayList<Flight> flight, RandomAccessFile flightFile) throws IOException {
 
         boolean choise = true;
         while (choise) {
@@ -23,7 +25,7 @@ public class AdminMenu {
             input.nextLine();
             switch (choiseAdminMenu) {
                 case 1:
-                    addFlight(input,flight);
+                    addFlight(input,flightFile);
                     break;
                 case 2:
                     System.out.println("Enter the flight id that you wish to change: ");
@@ -36,7 +38,7 @@ public class AdminMenu {
                     removeFlight(flight, flightIdSearcher02);
                     break;
                 case 4:
-                    viewFlightSchedules(flight);
+                    viewFlightSchedules(flightFile);
                     break;
                 case 0:
                     choise = false;
@@ -48,7 +50,7 @@ public class AdminMenu {
 
         }
     }
-    public void addFlight (Scanner input, ArrayList<Flight> flight) {
+    public void addFlight (Scanner input, RandomAccessFile flightFile) throws IOException {
         System.out.println("---------------------------------------");
         System.out.println("------------Add flight menu------------");
         System.out.println("---------------------------------------");
@@ -83,9 +85,7 @@ public class AdminMenu {
         input.nextLine();
 
         Flight flight01 = new Flight(flightId,Origin,Destination,Hour,Min,Date,Seat,Price);
-        flight01.setOriginalSeats(Seat);
-        flight.add(flight01);
-        // the last line needs to be tested
+        writeFlightsOnFile(flightFile, flight01);
     }
     public void updateFlight (String flightIdSearcher, Scanner input, ArrayList<Flight> flight) {
         for (int i = 0; i < flight.size(); i++) {
@@ -186,9 +186,33 @@ public class AdminMenu {
             }
         }
     }
-    public void viewFlightSchedules (ArrayList<Flight> flight) {
-        for (int i = 0; i < flight.size(); i++) {
-            System.out.println(flight.get(i));
+    public void viewFlightSchedules (RandomAccessFile flightFile) throws IOException {
+        flightFile.seek(0);
+        while (flightFile.length() != flightFile.getFilePointer()) {
+            System.out.print(flightFile.readUTF() + " | ");
+            System.out.print(flightFile.readUTF() + " | ");
+            System.out.print(flightFile.readUTF() + " | ");
+            System.out.print(flightFile.readInt() + " | ");
+            System.out.print(flightFile.readInt() + " | ");
+            System.out.print(flightFile.readUTF() + " | ");
+            System.out.print(flightFile.readInt() + " | ");
+            System.out.print(flightFile.readInt() + " | ");
+            System.out.print(flightFile.readInt() + " | ");
+            System.out.println();
         }
+
+    }
+    public void writeFlightsOnFile (RandomAccessFile flightFile, Flight flight) throws IOException {
+        flightFile.seek(flightFile.length());
+        flightFile.writeUTF(flight.fixFlightId());
+        flightFile.writeUTF(flight.fixOrigin());
+        flightFile.writeUTF(flight.fixDestination());
+        flightFile.writeInt(flight.getHour());
+        flightFile.writeInt(flight.getMin());
+        flightFile.writeUTF(flight.fixDate());
+        flightFile.writeInt(flight.getSeat());
+        flightFile.writeInt(flight.getOriginalSeats());
+        flightFile.writeInt(flight.getPrice());
+
     }
 }
