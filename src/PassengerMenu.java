@@ -1,9 +1,10 @@
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PassengerMenu {
 
-    public void mainPassengerMenu(String ActiveUserName, Scanner input, ArrayList<Flight> flight, ArrayList<Passenger> passengers, ArrayList<Tickets> tickets) {
+    public void mainPassengerMenu(String ActiveUserName, Scanner input, RandomAccessFile flightFile, RandomAccessFile userFile, RandomAccessFile ticketsFile) {
 
         int choise = 1;
         while (choise != 0) {
@@ -12,7 +13,7 @@ public class PassengerMenu {
             System.out.println("-------------Passenger menu------------");
             System.out.println("---------------------------------------");
             System.out.println("""
-                                    
+
                     <1> Change Password
                     <2> Search flight ticket
                     <3> Booking ticket
@@ -25,7 +26,7 @@ public class PassengerMenu {
 
             choise = input.nextInt();
             input.nextLine();
-            
+
             switch (choise) {
                 case 1:
                     changePassword(ActiveUserName, input, passengers);
@@ -112,7 +113,6 @@ public class PassengerMenu {
         }
     }
 
-
     private void bookingTickets(Scanner input, ArrayList<Flight> flight, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
         for (int i = 0; i < passengers.size(); i++) {
             if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
@@ -177,7 +177,7 @@ public class PassengerMenu {
                     <5> Time
                     <6> Price
                     <0> Done with the search
-                    
+
                     """);
             int filterSearch = input.nextInt();
             input.nextLine();

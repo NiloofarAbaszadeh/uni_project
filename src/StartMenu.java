@@ -1,15 +1,11 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class StartMenu {
 
-    public void menu (Scanner input, ArrayList<Flight> flight, ArrayList<Passenger> passengers, ArrayList<Tickets> tickets, RandomAccessFile flightFile) throws IOException {
-
-
+    public void menu (Scanner input, RandomAccessFile userFile, RandomAccessFile ticketsFile, RandomAccessFile flightFile) throws IOException {
         while (true) {
-
             int ChoseMenu = 0;
             printMainMenu();
             ChoseMenu = input.nextInt();
@@ -17,32 +13,55 @@ public class StartMenu {
 
             if (ChoseMenu == 1) {
                 // Sign in menu
-                System.out.println("Enter user name");
-                System.out.print(">>>> ");
-                String ActiveUserName = input.nextLine();
-                // Check for the valid user
-                System.out.println("Enter user Password");
-                System.out.print(">>>> ");
-                String ActiveUserPassword = input.nextLine();
-                if (ActiveUserName.equals("Admin") && ActiveUserPassword.equals("admin")) {
-                    AdminMenu adminMenu = new AdminMenu();
-                    adminMenu.mainAdminMenu(input,flightFile);
-                }
-                for (int i = 0; i < passengers.size(); i++) {
-                    if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
-                        if (ActiveUserPassword.equals(passengers.get(i).getPassengerPassword())) {
-                            PassengerMenu passengerMenu = new PassengerMenu();
-                            passengerMenu.mainPassengerMenu(ActiveUserName, input, flight, passengers, tickets);
-                            System.out.println();
+                String ActiveUserName = null;
+                boolean checkUserName = true;
+                while (checkUserName) {
+                    int check = 1;
+                    System.out.println("Enter user name");
+                    System.out.print(">>>> ");
+                    ActiveUserName = input.nextLine();
+                    // admin login menu
+                    if (ActiveUserName.equals("Admin")) {
+                        String ActiveUserPassword = input.nextLine();
+                        if(ActiveUserPassword.equals("admin")) {
+                            AdminMenu adminMenu = new AdminMenu();
+                            adminMenu.mainAdminMenu(input,flightFile);
+                        } else {
+                            System.out.println("not the right password");
                         }
-                    } else if (passengers.size() == i) {
-                        System.out.println("User not found");
-                        System.out.println();
                     }
-
+                    // normal user login
+                    ActiveUserName = fixUserName(ActiveUserName);
+                    for (int i = 0; i < userFile.length(); i+=34) {
+                        userFile.seek(i);
+                        if (ActiveUserName.equals(userFile.readUTF())) {
+                            // test
+                            System.out.println("Enter user Password");
+                            System.out.print(">>>> ");
+                            String ActiveUserPassword = fixUserPassword(input.nextLine());
+                            if (ActiveUserPassword.equals(userFile.readUTF())) {
+                                PassengerMenu passengerMenu = new PassengerMenu();
+                                passengerMenu.mainPassengerMenu(ActiveUserName,input,flightFile,userFile,ticketsFile);
+                            } else {
+                                System.out.println("not the right password");
+                            }
+                            checkUserName = false;
+                            break;
+                        }
+                        if (userFile.getFilePointer()+17 == userFile.length()) {
+                            System.out.println("""
+                                    This user does no exist, you can quite this part or try again.
+                                    <1> try again
+                                    <2> quite
+                                    """ );
+                            check = input.nextInt();
+                            input.nextLine();
+                            break;
+                        }
+                    }
+                    if (check == 2)
+                        break;
                 }
-
-
             } else if (ChoseMenu == 2) {
                 // Sign up menu
                 System.out.println("Enter the new user`s name");
@@ -52,14 +71,17 @@ public class StartMenu {
                 System.out.print(">>>> ");
                 String newUserPassword = input.nextLine();
                 Passenger passengers01 = new Passenger(newUserName, newUserPassword);
-                passengers.add(passengers01);
+                userFile.seek(userFile.length());
+                userFile.writeUTF(passengers01.fixUserName());
+                System.out.println(userFile.length());
+                userFile.writeUTF(passengers01.fixUserPassword());
+                System.out.println(userFile.length());
             } else {
                 ChoseMenu = 0;
                 System.out.println("please chose a valid number");
             }
         }
     }
-    // todo
     public void printMainMenu () {
 
         // Starting menu
@@ -107,5 +129,25 @@ public class StartMenu {
         flightFile.writeInt(flight.getSeat());
         flightFile.writeInt(flight.getOriginalSeats());
         flightFile.writeInt(flight.getPrice());
+    }
+    public String fixUserName (String PassengerName) {
+        for (int i = 0; i < 15; i++) {
+            if (PassengerName.length() <= 15) {
+                PassengerName += " ";
+            } else {
+                return PassengerName.substring(0,15);
+            }
+        }
+        return null;
+    }
+    public String fixUserPassword (String PassengerPassword) {
+        for (int i = 0; i < 15; i++) {
+            if (PassengerPassword.length() <= 15) {
+                PassengerPassword += " ";
+            } else {
+                return PassengerPassword.substring(0,15);
+            }
+        }
+        return null;
     }
 }
