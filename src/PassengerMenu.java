@@ -1,10 +1,11 @@
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PassengerMenu {
 
-    public void mainPassengerMenu(String ActiveUserName, Scanner input, RandomAccessFile flightFile, RandomAccessFile userFile, RandomAccessFile ticketsFile) {
+    public void mainPassengerMenu(String ActiveUserName, Scanner input, RandomAccessFile flightFile, RandomAccessFile userFile, RandomAccessFile ticketsFile) throws IOException {
 
         int choise = 1;
         while (choise != 0) {
@@ -29,23 +30,23 @@ public class PassengerMenu {
 
             switch (choise) {
                 case 1:
-                    changePassword(ActiveUserName, input, passengers);
+                    changePassword(ActiveUserName,input,userFile);
                     choise = 0;
                     break;
                 case 2:
-                    searchFlightTickets (input, flight);
+                    searchFlightTickets (input,flightFile);
                     break;
                 case 3:
-                    bookingTickets (input, flight, ActiveUserName, tickets, passengers);
+                    bookingTickets (input,flightFile,ActiveUserName,ticketsFile,userFile);
                     break;
                 case 4:
-                    ticketCancellation (input, ActiveUserName,tickets,passengers);
+                    ticketCancellation (input, ActiveUserName,ticketsFile,userFile);
                     break;
                 case 5:
-                    bookedTickets (ActiveUserName, tickets);
+                    bookedTickets (ActiveUserName,ticketsFile);
                     break;
                 case 6:
-                    addCharge (ActiveUserName, passengers, input);
+                    addCharge (ActiveUserName,userFile,input);
                     break;
                 case 0:
                     choise = 0;
@@ -58,15 +59,23 @@ public class PassengerMenu {
 
         }
     }
-
-    private void ticketCancellation(Scanner input, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
-        for (int i = 0; i < passengers.size(); i++) {
-            if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
+    // Done
+    private void ticketCancellation(Scanner input, String ActiveUserName, RandomAccessFile ticketsFile, RandomAccessFile userFile) throws IOException {
+        for (int i = 0; i < userFile.length(); i+=38) {
+            userFile.seek(i);
+            if (ActiveUserName.equals(userFile.readUTF())) {
                 System.out.println("pls enter the flight id that you wish to cancel: ");
-                String cancelFlightId = input.nextLine();
-                for (int j = 0; j < tickets.size(); j++) {
-                    if (tickets.get(i).getBoughtFlightId().equals(cancelFlightId)) {
-                        System.out.println(tickets);
+                int cancelFlightId = input.nextInt();
+                input.nextLine();
+                for (int j = 0; j < ticketsFile.length(); j++) {
+                    ticketsFile.seek(j);
+                    if (ticketsFile.readInt() == cancelFlightId) {
+                        ticketsFile.seek(j);
+                        System.out.println(ticketsFile.readInt() + " | ");
+                        System.out.println(ticketsFile.readUTF() + " | ");
+                        System.out.println(ticketsFile.readUTF() + " | ");
+                        System.out.println(ticketsFile.readInt() + " | ");
+                        System.out.println();
                         System.out.println("""
                                 do you wish to cancel it?
                                 <1> Yes
@@ -75,8 +84,36 @@ public class PassengerMenu {
                         int coise01 = input.nextInt();
                         input.nextLine();
                         if (coise01 == 1) {
-                            passengers.get(i).setPrice(tickets.get(j).getUsedPrice() + passengers.get(i).getPrice());
-                            tickets.remove(i);
+                            // returning the money to user
+                            userFile.seek(i + 34);
+                            ticketsFile.seek(j + 38);
+                            int returnedPrice = userFile.readInt() + ticketsFile.readInt();
+                            userFile.seek(userFile.getFilePointer() - 4);
+                            userFile.writeInt(returnedPrice);
+
+                            // now remove the ticket
+                            ticketsFile.seek(j + 42);
+                            boolean check = true;
+                            while (check) {
+                                // read the next flight
+                                if (ticketsFile.getFilePointer() != (j + 42))
+                                    ticketsFile.seek(ticketsFile.getFilePointer() + 42);
+
+                                if (ticketsFile.getFilePointer() == ticketsFile.length())
+                                    check = false;
+
+                                int subId = ticketsFile.readInt();
+                                String subBoughTicketUser = ticketsFile.readUTF();
+                                String subBoughtFlightId = ticketsFile.readUTF();
+                                int subPrice = ticketsFile.readInt();
+                                ticketsFile.seek(ticketsFile.getFilePointer() - 84);
+                                ticketsFile.writeInt(subId);
+                                ticketsFile.writeUTF(subBoughTicketUser);
+                                ticketsFile.writeUTF(subBoughtFlightId);
+                                ticketsFile.writeInt(subPrice);
+
+                                // todo remove the last flight
+                            }
                             System.out.println("Done");
                         } else {
                             break;
@@ -86,33 +123,42 @@ public class PassengerMenu {
             }
         }
     }
-
-    private void bookedTickets(String activeUserName, ArrayList<Tickets> tickets) {
-        for (int i = 0; i < tickets.size(); i++) {
-            if (tickets.get(i).getBoughTicketUser().equals(activeUserName)) {
-                System.out.println(tickets);
+    // Done
+    private void bookedTickets(String activeUserName, RandomAccessFile ticketsFile) throws IOException {
+        for (int i = 0; i < ticketsFile.length(); i++) {
+        ticketsFile.seek(i + 4);
+            if (ticketsFile.readUTF().equals(activeUserName)) {
+                ticketsFile.seek(i);
+                System.out.println(ticketsFile.readInt() + " | ");
+                System.out.println(ticketsFile.readUTF() + " | ");
+                System.out.println(ticketsFile.readUTF() + " | ");
+                System.out.println(ticketsFile.readInt() + " | ");
+                System.out.println();
             }
         }
         System.out.println();
     }
-
-    private void addCharge(String activeUserName, ArrayList<Passenger> passengers, Scanner input) {
-        for (int i = 0; i < passengers.size(); i++) {
-            if (activeUserName.equals(passengers.get(i).getPassengerName())) {
-                System.out.printf("your cornet charge is: " + passengers.get(i).getPrice());
+    // Done
+    private void addCharge(String activeUserName, RandomAccessFile userFile, Scanner input) throws IOException {
+        for (int i = 0; i < userFile.length(); i+= 38) {
+            userFile.seek(i);
+            if (activeUserName.equals(userFile.readUTF())) {
+                userFile.seek(i + 34);
+                System.out.printf("your cornet charge is: " + userFile.readInt());
                 System.out.println();
                 System.out.println("how mach do you want to add to your charge? ");
                 System.out.println("your charge needs to be more then 0 :), its your problem if you make a mistake");
                 int addPrice = input.nextInt();
                 input.nextLine();
-                int cornetCharge = passengers.get(i).getPrice();
-                passengers.get(i).setPrice(cornetCharge + addPrice);
+                userFile.seek(userFile.getFilePointer() - 4);
+                int cornetCharge = userFile.readInt();
+                userFile.seek(userFile.getFilePointer() - 4);
+                userFile.writeInt(cornetCharge + addPrice);
                 System.out.println("Done");
-
             }
         }
     }
-
+    // Done
     private void bookingTickets(Scanner input, ArrayList<Flight> flight, String ActiveUserName, ArrayList<Tickets> tickets, ArrayList<Passenger> passengers) {
         for (int i = 0; i < passengers.size(); i++) {
             if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
@@ -286,15 +332,27 @@ public class PassengerMenu {
         }
     }
 
-    private void changePassword(String ActiveUserName, Scanner input, ArrayList<Passenger> passengers) {
-        for (int i = 0; i < passengers.size(); i++) {
-            if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
+    private void changePassword(String ActiveUserName, Scanner input, RandomAccessFile userFile) throws IOException {
+        for (int i = 0; i < userFile.length(); i+=38) {
+            userFile.seek(i);
+            if (ActiveUserName.equals(userFile.readUTF())) {
                 System.out.println("pls enter the new password: ");
                 String newPassword = input.nextLine();
-                passengers.get(i).setPassengerPassword(newPassword);
+                userFile.writeUTF(fixUserPassword(newPassword));
                 System.out.println("Done");
-                System.out.println();
             }
         }
     }
+    // Done
+    public String fixUserPassword (String PassengerPassword) {
+        for (int i = 0; i < 15; i++) {
+            if (PassengerPassword.length() <= 15) {
+                PassengerPassword += " ";
+            } else {
+                return PassengerPassword.substring(0,15);
+            }
+        }
+        return null;
+    }
+    // Done
 }

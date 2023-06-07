@@ -11,39 +11,30 @@ public class Tickets {
         this.boughtFlightId = boughtFlightId;
         this.usedPrice = usedPrice;
     }
-
     public int getUsedPrice() {
         return usedPrice;
     }
-
     public void setUsedPrice(int usedPrice) {
         this.usedPrice = usedPrice;
     }
-
     public int getBoughtTicketCode() {
         return boughtTicketCode;
     }
-
     public void setBoughtTicketCode(int boughtTicketCode) {
         this.boughtTicketCode = boughtTicketCode;
     }
-
     public String getBoughTicketUser() {
         return boughTicketUser;
     }
-
     public void setBoughTicketUser(String boughTicketUser) {
         this.boughTicketUser = boughTicketUser;
     }
-
     public String getBoughtFlightId() {
         return boughtFlightId;
     }
-
     public void setBoughtFlightId(String boughtFlightId) {
         this.boughtFlightId = boughtFlightId;
     }
-
     public String fixBoughTicketUser () {
         for (int i = 0; i < 15; i++) {
             if (boughTicketUser.length() <= 6) {
@@ -54,7 +45,6 @@ public class Tickets {
         }
         return null;
     }
-
     public String fixBoughtFlightId () {
         for (int i = 0; i < 15; i++) {
             if (boughtFlightId.length() <= 6) {
@@ -65,7 +55,6 @@ public class Tickets {
         }
         return null;
     }
-
     @Override
     public String toString() {
         return "Tickets{" +

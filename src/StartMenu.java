@@ -32,7 +32,7 @@ public class StartMenu {
                     }
                     // normal user login
                     ActiveUserName = fixUserName(ActiveUserName);
-                    for (int i = 0; i < userFile.length(); i+=34) {
+                    for (int i = 0; i < userFile.length(); i+=38) {
                         userFile.seek(i);
                         if (ActiveUserName.equals(userFile.readUTF())) {
                             // test
@@ -48,7 +48,7 @@ public class StartMenu {
                             checkUserName = false;
                             break;
                         }
-                        if (userFile.getFilePointer()+17 == userFile.length()) {
+                        if (userFile.getFilePointer()+21 == userFile.length()) {
                             System.out.println("""
                                     This user does no exist, you can quite this part or try again.
                                     <1> try again
@@ -73,9 +73,8 @@ public class StartMenu {
                 Passenger passengers01 = new Passenger(newUserName, newUserPassword);
                 userFile.seek(userFile.length());
                 userFile.writeUTF(passengers01.fixUserName());
-                System.out.println(userFile.length());
                 userFile.writeUTF(passengers01.fixUserPassword());
-                System.out.println(userFile.length());
+                userFile.writeInt(0);
             } else {
                 ChoseMenu = 0;
                 System.out.println("please chose a valid number");

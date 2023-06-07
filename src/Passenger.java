@@ -9,32 +9,25 @@ public class Passenger {
     public int getPrice() {
         return price;
     }
-
     public void setPrice(int price) {
         this.price = price;
     }
-
     public Passenger(String passengerName, String passengerPassword) {
         PassengerName = passengerName;
         PassengerPassword = passengerPassword;
     }
-
     public String getPassengerName() {
         return PassengerName;
     }
-
     public void setPassengerName(String passengerName) {
         PassengerName = passengerName;
     }
-
     public String getPassengerPassword() {
         return PassengerPassword;
     }
-
     public void setPassengerPassword(String passengerPassword) {
         PassengerPassword = passengerPassword;
     }
-
     public String fixUserName () {
         for (int i = 0; i < 15; i++) {
             if (PassengerName.length() <= 15) {
@@ -45,7 +38,6 @@ public class Passenger {
         }
         return null;
     }
-
     public String fixUserPassword () {
         for (int i = 0; i < 15; i++) {
             if (PassengerPassword.length() <= 15) {

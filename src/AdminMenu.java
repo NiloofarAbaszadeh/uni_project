@@ -200,7 +200,7 @@ public class AdminMenu {
                         flightFile.seek(flightFile.getFilePointer() + 66);
 
                     if (flightFile.getFilePointer() == flightFile.length())
-                        break;
+                        check = false;
 
                     String subFlightId = flightFile.readUTF();
                     String subOrigin = flightFile.readUTF();
