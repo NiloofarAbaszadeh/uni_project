@@ -22,79 +22,60 @@ public class Flight {
         this.originalSeats = seat;
         this.price = price;
     }
-
     public int getOriginalSeats() {
         return originalSeats;
     }
-
     public void setOriginalSeats(int originalSeats) {
         this.originalSeats = originalSeats;
     }
-
     public String getFlightId() {
         return flightId;
     }
-
     public void setFlightId(String flightId) {
         this.flightId = flightId;
     }
-
     public String getOrigin() {
         return origin;
     }
-
     public void setOrigin(String origin) {
         this.origin = origin;
     }
-
     public String getDestination() {
         return destination;
     }
-
     public void setDestination(String destination) {
         this.destination = destination;
     }
-
     public int getHour() {
         return hour;
     }
-
     public void setHour(int hour) {
         this.hour = hour;
     }
-
     public int getMin() {
         return min;
     }
-
     public void setMin(int min) {
         this.min = min;
     }
-
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public int getSeat() {
         return seat;
     }
-
     public void setSeat(int seat) {
         this.seat = seat;
     }
-
     public int getPrice() {
         return price;
     }
-
     public void setPrice(int price) {
         this.price = price;
     }
-
     public void addFlightToFile (String flightId, String origin, String destination, int hour, int min, String date, int seat, int price) {
         // todo : write on Flight file
 

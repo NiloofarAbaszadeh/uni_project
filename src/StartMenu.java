@@ -26,7 +26,7 @@ public class StartMenu {
                 String ActiveUserPassword = input.nextLine();
                 if (ActiveUserName.equals("Admin") && ActiveUserPassword.equals("admin")) {
                     AdminMenu adminMenu = new AdminMenu();
-                    adminMenu.mainAdminMenu(input,flight,flightFile);
+                    adminMenu.mainAdminMenu(input,flightFile);
                 }
                 for (int i = 0; i < passengers.size(); i++) {
                     if (ActiveUserName.equals(passengers.get(i).getPassengerName())) {
@@ -59,6 +59,7 @@ public class StartMenu {
             }
         }
     }
+    // todo
     public void printMainMenu () {
 
         // Starting menu
@@ -106,6 +107,5 @@ public class StartMenu {
         flightFile.writeInt(flight.getSeat());
         flightFile.writeInt(flight.getOriginalSeats());
         flightFile.writeInt(flight.getPrice());
-        System.out.println(flightFile.length());
     }
 }

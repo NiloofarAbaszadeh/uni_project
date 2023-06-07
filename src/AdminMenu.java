@@ -1,11 +1,9 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminMenu {
-
-    public void mainAdminMenu(Scanner input,ArrayList<Flight> flight, RandomAccessFile flightFile) throws IOException {
+    public void mainAdminMenu(Scanner input, RandomAccessFile flightFile) throws IOException {
 
         boolean choise = true;
         while (choise) {
@@ -30,12 +28,12 @@ public class AdminMenu {
                 case 2:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher01 = input.nextLine();
-                    updateFlight(flightIdSearcher01,input,flight);
+                    updateFlight(flightIdSearcher01,input,flightFile);
                     break;
                 case 3:
                     System.out.println("Enter the flight id that you wish to change: ");
                     String flightIdSearcher02 = input.nextLine();
-                    removeFlight(flight, flightIdSearcher02);
+                    removeFlight(flightIdSearcher02, flightFile);
                     break;
                 case 4:
                     viewFlightSchedules(flightFile);
@@ -87,14 +85,28 @@ public class AdminMenu {
         Flight flight01 = new Flight(flightId,Origin,Destination,Hour,Min,Date,Seat,Price);
         writeFlightsOnFile(flightFile, flight01);
     }
-    public void updateFlight (String flightIdSearcher, Scanner input, ArrayList<Flight> flight) {
-        for (int i = 0; i < flight.size(); i++) {
-            if (flightIdSearcher.equals(flight.get(i).getFlightId())) {
-                if (flight.get(i).getSeat() != flight.get(i).getOriginalSeats()) {
+    public void updateFlight (String flightIdSearcher, Scanner input, RandomAccessFile flightFile) throws IOException {
+        for (int i = 0; i < flightFile.length(); i+=66) {
+            flightFile.seek(i);
+            if (flightIdSearcher.equals(flightFile.readUTF())) {
+                flightFile.seek(i + 54);
+                if (flightFile.readInt() != flightFile.readInt()) {
                     System.out.println("you can`t update this flight because some one has already reserved it");
                     break;
                 }
-                System.out.println(flight);
+                // printing the flight
+                flightFile.seek(i);
+                System.out.print(flightFile.readUTF() + " | ");
+                System.out.print(flightFile.readUTF() + " | ");
+                System.out.print(flightFile.readUTF() + " | ");
+                System.out.print(flightFile.readInt() + " | ");
+                System.out.print(flightFile.readInt() + " | ");
+                System.out.print(flightFile.readUTF() + " | ");
+                System.out.print(flightFile.readInt() + " | ");
+                System.out.print(flightFile.readInt() + " | ");
+                System.out.print(flightFile.readInt() + " | ");
+                System.out.println();
+                // printing flight info
                 System.out.println("which part do you wish to change?");
                 System.out.println("""
                          <1> Origin
@@ -111,50 +123,49 @@ public class AdminMenu {
                 while (loopControl) {
                 switch (changeFilter) {
                     case 1:
-                        System.out.printf("old origin: " + flight.get(i).getOrigin());
-                        System.out.println();
                         System.out.println("pls enter the new Origin:");
-                        flight.get(i).setOrigin(input.nextLine());
+                        flightFile.seek(i + 8);
+                        flightFile.writeUTF(fixOrigin(input.nextLine()));
                         loopControl = false;
                         break;
                     case 2:
-                        System.out.printf("old Destination: " + flight.get(i).getDestination());
                         System.out.println("pls enter the new Destination:");
-                        flight.get(i).setDestination(input.nextLine());
+                        flightFile.seek(i + 20);
+                        flightFile.writeUTF(fixDestination(input.nextLine()));
                         loopControl = false;
                         break;
                     case 3:
-                        System.out.printf("old Date:" + flight.get(i).getDate());
                         System.out.println("pls enter the new Date (Sample: 1402/01/12): ");
-                        flight.get(i).setDate(input.nextLine());
+                        flightFile.seek(i + 40);
+                        flightFile.writeUTF(fixDate(input.nextLine()));
                         loopControl = false;
                         break;
                     case 4:
-                        System.out.println("old time: ");
-                        System.out.printf("hour: " + flight.get(i).getHour());
-                        System.out.printf("min: " + flight.get(i).getMin());
                         System.out.println("pls enter the new time:");
-                        int newHour = input.nextInt();
+                        System.out.println("Hour: ");
+                        flightFile.seek(i + 32);
+                        flightFile.writeInt(input.nextInt());
                         input.nextLine();
-                        flight.get(i).setHour(newHour);
-                        int newMin = input.nextInt();
+
+                        System.out.println("Min: ");
+                        flightFile.writeInt(input.nextInt());
                         input.nextLine();
-                        flight.get(i).setMin(newMin);
                         loopControl = false;
                         break;
                     case 5:
-                        System.out.printf("old price: " + flight.get(i).getPrice());
-                        System.out.println("pls enter the new Origin:");
-                        flight.get(i).setPrice(input.nextInt());
+                        System.out.println("pls enter the new Price:");
+                        flightFile.seek(i + 62);
+                        flightFile.writeInt(input.nextInt());
+                        input.nextLine();
                         loopControl = false;
                         break;
                     case 6:
-                        System.out.printf("old seats: " + flight.get(i).getSeat());
                         System.out.println("pls enter the new Seats:");
                         int newSeats = input.nextInt();
                         input.nextLine();
-                        flight.get(i).setSeat(newSeats);
-                        flight.get(i).setOriginalSeats(newSeats);
+                        flightFile.seek(i + 54);
+                        flightFile.writeInt(newSeats);
+                        flightFile.writeInt(newSeats);
                         loopControl = false;
                         break;
                     default:
@@ -162,27 +173,63 @@ public class AdminMenu {
                     }
                 }
                 break;
-            } else if (flight.size() == i) {
+            } else if (flightFile.length() == i) {
                 System.out.println("Flight not found");
             } else {
-                // nothing
+                System.out.println("Something`s not right :)");
             }
 
         }
     }
-    public void removeFlight (ArrayList<Flight> flight, String flightIdSearcher02) {
-        for (int i = 0; i < flight.size(); i++) {
-            if (flightIdSearcher02.equals(flight.get(i).getFlightId())) {
-                if (flight.get(i).getSeat() != flight.get(i).getOriginalSeats()) {
-                    System.out.println("you can`t remove this flight because some one has already reserved it");
+    public void removeFlight (String flightIdSearcher, RandomAccessFile flightFile) throws IOException {
+        for (int i = 0; i < flightFile.length(); i+=66) {
+            flightFile.seek(i);
+            if (flightIdSearcher.equals(flightFile.readUTF())) {
+                flightFile.seek(i + 54);
+                if (flightFile.readInt() != flightFile.readInt()) {
+                    System.out.println("you can`t update this flight because some one has already reserved it");
                     break;
                 }
-                flight.remove(i);
+
+                // how to delete a flight
+                flightFile.seek(i + 66);
+                boolean check = true;
+                while (check) {
+                    // read the next flight
+                    if (flightFile.getFilePointer() != (i+66))
+                        flightFile.seek(flightFile.getFilePointer() + 66);
+
+                    if (flightFile.getFilePointer() == flightFile.length())
+                        break;
+
+                    String subFlightId = flightFile.readUTF();
+                    String subOrigin = flightFile.readUTF();
+                    String subDestination = flightFile.readUTF();
+                    int subHour = flightFile.readInt();
+                    int subMin = flightFile.readInt();
+                    String subDate = flightFile.readUTF();
+                    int subSeat = flightFile.readInt();
+                    int subOriginalSeat = flightFile.readInt();
+                    int subPrice = flightFile.readInt();
+                    // write on the last flight
+                    flightFile.seek(flightFile.getFilePointer() - 132);
+                    flightFile.writeUTF(subFlightId);
+                    flightFile.writeUTF(subOrigin);
+                    flightFile.writeUTF(subDestination);
+                    flightFile.writeInt(subHour);
+                    flightFile.writeInt(subMin);
+                    flightFile.writeUTF(subDate);
+                    flightFile.writeInt(subSeat);
+                    flightFile.writeInt(subOriginalSeat);
+                    flightFile.writeInt(subPrice);
+                }
+                // todo remove the last flight on the list (ask sage)
+
                 System.out.println("the flight has ben successfully removed");
-            } else if (flight.size() == i) {
+            } else if (flightFile.length() == i) {
                 System.out.println("Flight not found");
             } else {
-                // nothing
+                System.out.println("Something in not right :)");
             }
         }
     }
@@ -214,5 +261,37 @@ public class AdminMenu {
         flightFile.writeInt(flight.getOriginalSeats());
         flightFile.writeInt(flight.getPrice());
 
+    }
+    public String fixOrigin (String origin) {
+
+        for (int i = 0; i < 10; i++) {
+            if (origin.length() <= 10) {
+                origin += " ";
+            } else {
+                return origin.substring(0,10);
+            }
+        }
+        return null;
+    }
+    public String fixDestination (String destination) {
+
+        for (int i = 0; i < 10; i++) {
+            if (destination.length() <= 10) {
+                destination += " ";
+            } else {
+                return destination.substring(0,10);
+            }
+        }
+        return null;
+    }
+    public String fixDate (String date) {
+        for (int i = 0; i < 12; i++) {
+            if (date.length() <= 12) {
+                date += " ";
+            } else {
+                return date.substring(0,12);
+            }
+        }
+        return null;
     }
 }
