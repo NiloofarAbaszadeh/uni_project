@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Random;
 import java.util.Scanner;
 
 public class PassengerMenu {
@@ -39,7 +40,7 @@ public class PassengerMenu {
                     bookingTickets (input,flightFile,ActiveUserName,ticketsFile,userFile);
                     break;
                 case 4:
-                    ticketCancellation (input, ActiveUserName,ticketsFile,userFile);
+                    ticketCancellation (input, ActiveUserName,ticketsFile,userFile,flightFile);
                     break;
                 case 5:
                     bookedTickets (ActiveUserName,ticketsFile);
@@ -58,14 +59,14 @@ public class PassengerMenu {
         }
     }
     // Done
-    private void ticketCancellation(Scanner input, String ActiveUserName, RandomAccessFile ticketsFile, RandomAccessFile userFile) throws IOException {
+    private void ticketCancellation(Scanner input, String ActiveUserName, RandomAccessFile ticketsFile, RandomAccessFile userFile, RandomAccessFile flightFile) throws IOException {
         for (int i = 0; i < userFile.length(); i+=38) {
             userFile.seek(i);
             if (ActiveUserName.equals(userFile.readUTF())) {
                 System.out.println("pls enter the flight id that you wish to cancel: ");
                 int cancelFlightId = input.nextInt();
                 input.nextLine();
-                for (int j = 0; j < ticketsFile.length(); j++) {
+                for (int j = 0; j < ticketsFile.length(); j+=33) {
                     ticketsFile.seek(j);
                     if (ticketsFile.readInt() == cancelFlightId) {
                         ticketsFile.seek(j);
@@ -83,36 +84,54 @@ public class PassengerMenu {
                         input.nextLine();
                         if (coise01 == 1) {
                             // returning the money to user
-                            userFile.seek(i + 34);
-                            ticketsFile.seek(j + 38);
-                            int returnedPrice = userFile.readInt() + ticketsFile.readInt();
+                            userFile.seek(userFile.getFilePointer() + 17);
+                            ticketsFile.seek(ticketsFile.getFilePointer() - 4);
+                            int subHelp = ticketsFile.readInt();
+                            int returnedPrice = userFile.readInt() + subHelp;
                             userFile.seek(userFile.getFilePointer() - 4);
                             userFile.writeInt(returnedPrice);
 
+                            ticketsFile.seek(ticketsFile.getFilePointer() - 12);
+                            String subHelp01 = ticketsFile.readUTF();
+                            for (int k = 0; k < flightFile.length(); k+=66) {
+                                flightFile.seek(k);
+                                if (flightFile.readUTF().equals(subHelp01)) {
+                                    flightFile.seek(flightFile.getFilePointer() + 54);
+                                    int returnSeats = subHelp / flightFile.readInt();
+                                    flightFile.seek(flightFile.getFilePointer() - 12);
+                                    int beforeSeats = flightFile.readInt() + returnSeats;
+                                    flightFile.seek(flightFile.getFilePointer() - 4);
+                                    flightFile.writeInt(beforeSeats);
+                                }
+                            }
+                            ticketsFile.seek(ticketsFile.getFilePointer() + 4);
+
                             // now remove the ticket
-                            ticketsFile.seek(j + 42);
                             boolean check = true;
                             while (check) {
-                                // read the next flight
-                                if (ticketsFile.getFilePointer() != (j + 42))
-                                    ticketsFile.seek(ticketsFile.getFilePointer() + 42);
 
-                                if (ticketsFile.getFilePointer() == ticketsFile.length())
+                                if (ticketsFile.getFilePointer() == ticketsFile.length()) {
+                                    ticketsFile.setLength(ticketsFile.getFilePointer() - 33);
                                     check = false;
-
-                                int subId = ticketsFile.readInt();
-                                String subBoughTicketUser = ticketsFile.readUTF();
-                                String subBoughtFlightId = ticketsFile.readUTF();
-                                int subPrice = ticketsFile.readInt();
-                                ticketsFile.seek(ticketsFile.getFilePointer() - 84);
-                                ticketsFile.writeInt(subId);
-                                ticketsFile.writeUTF(subBoughTicketUser);
-                                ticketsFile.writeUTF(subBoughtFlightId);
-                                ticketsFile.writeInt(subPrice);
-
-                                // todo remove the last flight
+                                } else {
+                                    int subId = ticketsFile.readInt();
+                                    String subBoughTicketUser = ticketsFile.readUTF();
+                                    String subBoughtFlightId = ticketsFile.readUTF();
+                                    int subPrice = ticketsFile.readInt();
+                                    // write on the last flight
+                                    ticketsFile.seek(ticketsFile.getFilePointer() - 66);
+                                    ticketsFile.writeInt(subId);
+                                    ticketsFile.writeUTF(subBoughTicketUser);
+                                    ticketsFile.writeUTF(subBoughtFlightId);
+                                    ticketsFile.writeInt(subPrice);
+                                    ticketsFile.seek(ticketsFile.getFilePointer() + 33);
+                                    if (ticketsFile.getFilePointer() == ticketsFile.length()) {
+                                        ticketsFile.setLength(ticketsFile.getFilePointer() - 33);
+                                        check = false;
+                                    }
+                                }
+                                System.out.println("Done");
                             }
-                            System.out.println("Done");
                         } else {
                             break;
                         }
@@ -123,7 +142,8 @@ public class PassengerMenu {
     }
     // Done
     private void bookedTickets(String activeUserName, RandomAccessFile ticketsFile) throws IOException {
-        for (int i = 0; i < ticketsFile.length(); i++) {
+        activeUserName = fixUserName(activeUserName);
+        for (int i = 0; i < ticketsFile.length(); i+= 33) {
         ticketsFile.seek(i + 4);
             if (ticketsFile.readUTF().equals(activeUserName)) {
                 ticketsFile.seek(i);
@@ -134,6 +154,8 @@ public class PassengerMenu {
                 System.out.println();
             }
         }
+        if (ticketsFile.length() == 0)
+            System.out.println("you do not have any flights booked.");
         System.out.println();
     }
     // Done
@@ -163,7 +185,7 @@ public class PassengerMenu {
             ActiveUserName = fixUserName(ActiveUserName);
             if (ActiveUserName.equals(userFile.readUTF())) {
                 System.out.println("pls enter the flight id that you want to buy: ");
-                String buyFlight = input.nextLine();
+                String buyFlight = fixFlightId(input.nextLine());
                 for (int j = 0; j < flightFile.length(); j+= 66) {
                     flightFile.seek(j);
                     if (buyFlight.equals(flightFile.readUTF())) {
@@ -200,15 +222,20 @@ public class PassengerMenu {
                             userFile.seek(userFile.getFilePointer() - 4);
                             if (choise == 1) {
                                 if (buyPrice <= userFile.readInt()) {
+                                    flightFile.seek(flightFile.getFilePointer() - 12);
+                                    int subSeat = flightFile.readInt();
+                                    flightFile.seek(flightFile.getFilePointer() - 4);
+                                    flightFile.writeInt(subSeat - buySeats);
+
                                     userFile.seek(userFile.getFilePointer() - 4);
                                     int afterCharge = userFile.readInt() - buyPrice;
                                     userFile.seek(userFile.getFilePointer() - 4);
                                     userFile.writeInt(afterCharge);
-
+                                    Random rand = new Random();
                                     ticketsFile.seek(ticketsFile.length());
-                                    ticketsFile.writeInt(1000+i);
+                                    ticketsFile.writeInt(1000+rand.nextInt(1000));
                                     ticketsFile.writeUTF(ActiveUserName);
-                                    flightFile.seek(flightFile.getFilePointer() - 66);
+                                    flightFile.seek(flightFile.getFilePointer() - 58);
                                     ticketsFile.writeUTF(flightFile.readUTF());
                                     ticketsFile.writeInt(buyPrice);
                                     System.out.println("Done");
@@ -223,6 +250,8 @@ public class PassengerMenu {
 
 
                         }
+                    } else {
+
                     }
                 }
             }
@@ -245,13 +274,15 @@ public class PassengerMenu {
                     """);
             int filterSearch = input.nextInt();
             input.nextLine();
+
             switch (filterSearch) {
                 case 1:
                      System.out.println("pls enter the flight id you want to search for: ");
                      String SearchFlightId = input.nextLine();
-                     for (int i = 0; i < flightFile.length(); i+= 58) {
+                     SearchFlightId = fixFlightId(SearchFlightId);
+                     for (int i = 0; i < flightFile.length(); i+= 66) {
                          flightFile.seek(i);
-                        if (flightFile.readUTF().equals(SearchFlightId)) {
+                         if (flightFile.readUTF().equals(SearchFlightId)) {
                              flightFile.seek(flightFile.getFilePointer() - 8);
                              System.out.print(flightFile.readUTF() + " | ");
                              System.out.print(flightFile.readUTF() + " | ");
@@ -264,14 +295,16 @@ public class PassengerMenu {
                              System.out.print(flightFile.readInt() + " | ");
                              System.out.println();
                              flightFile.seek(flightFile.getFilePointer() - 58);
-                        }
+                         }
+                         if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                             System.out.println("No flight found.");
                      }
                     System.out.println();
                 break;
                 case 2:
                     System.out.println("pls enter the Origin you want to search for: ");
-                    String SearchOrigin = input.nextLine();
-                    for (int i = 8; i < flightFile.length(); i+=54) {
+                    String SearchOrigin = fixOrigin(input.nextLine());
+                    for (int i = 8; i < flightFile.length(); i+=66) {
                         flightFile.seek(i);
                         if (flightFile.readUTF().equals(SearchOrigin)) {
                             flightFile.seek(flightFile.getFilePointer() - 20);
@@ -287,13 +320,15 @@ public class PassengerMenu {
                             System.out.println();
                             flightFile.seek(flightFile.getFilePointer() - 46);
                         }
+                        if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                            System.out.println("No flight found.");
                     }
                     System.out.println();
                     break;
                 case 3:
                     System.out.println("pls enter the Destination you want to search for: ");
-                    String SearchDestination = input.nextLine();
-                    for (int i = 20; i < flightFile.length(); i+= 54) {
+                    String SearchDestination = fixDestination(input.nextLine());
+                    for (int i = 20; i < flightFile.length(); i+= 66) {
                         flightFile.seek(i);
                         if (flightFile.readUTF().equals(SearchDestination)) {
                             flightFile.seek(flightFile.getFilePointer() - 32);
@@ -309,13 +344,15 @@ public class PassengerMenu {
                             System.out.println();
                             flightFile.seek(flightFile.getFilePointer() - 34);
                         }
+                        if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                            System.out.println("No flight found.");
                     }
                     System.out.println();
                     break;
                 case 4:
                     System.out.println("pls enter the Date you want to search for: ");
-                    String SearchDate = input.nextLine();
-                    for (int i = 40; i < flightFile.length(); i+=52) {
+                    String SearchDate = fixDate(input.nextLine());
+                    for (int i = 40; i < flightFile.length(); i+=66) {
                         flightFile.seek(i);
                         if (flightFile.readUTF().equals(SearchDate)) {
                             flightFile.seek(flightFile.getFilePointer() - 54);
@@ -331,6 +368,8 @@ public class PassengerMenu {
                             System.out.println();
                             flightFile.seek(flightFile.getFilePointer() - 12);
                         }
+                        if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                            System.out.println("No flight found.");
                     }
                     System.out.println();
                     break;
@@ -341,7 +380,7 @@ public class PassengerMenu {
                     System.out.println("pls enter the Min you want to search for: ");
                     int SearchMin = input.nextInt();
                     input.nextLine();
-                    for (int i = 32; i < flightFile.length(); i+=58) {
+                    for (int i = 32; i < flightFile.length(); i+=66) {
                         flightFile.seek(i);
                         if (flightFile.readInt() == SearchHour && flightFile.readInt() == SearchMin) {
                             flightFile.seek(flightFile.getFilePointer() - 40);
@@ -357,6 +396,8 @@ public class PassengerMenu {
                             System.out.println();
                             flightFile.seek(flightFile.getFilePointer() - 26);
                         }
+                        if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                            System.out.println("No flight found.");
                     }
                     System.out.println();
                     break;
@@ -368,7 +409,7 @@ public class PassengerMenu {
                     System.out.println("Max: ");
                     int SearchPriceMax = input.nextInt();
                     input.nextLine();
-                    for (int i = 62; i < flightFile.length(); i+= 62) {
+                    for (int i = 62; i < flightFile.length(); i+= 66) {
                         flightFile.seek(i);
                         int subPrice = flightFile.readInt();
                         if (subPrice >= SearchPriceMin && subPrice <= SearchPriceMax) {
@@ -384,6 +425,8 @@ public class PassengerMenu {
                             System.out.print(flightFile.readInt() + " | ");
                             System.out.println();
                         }
+                        if (flightFile.getFilePointer() + 66 >= flightFile.length())
+                            System.out.println("No flight found.");
                     }
                     System.out.println();
                     break;
@@ -432,4 +475,47 @@ public class PassengerMenu {
         return null;
     }
     // Done
+    public String fixOrigin (String origin) {
+
+        for (int i = 0; i < 10; i++) {
+            if (origin.length() <= 10) {
+                origin += " ";
+            } else {
+                return origin.substring(0,10);
+            }
+        }
+        return null;
+    }
+    public String fixDestination (String destination) {
+
+        for (int i = 0; i < 10; i++) {
+            if (destination.length() <= 10) {
+                destination += " ";
+            } else {
+                return destination.substring(0,10);
+            }
+        }
+        return null;
+    }
+    public String fixDate (String date) {
+        for (int i = 0; i < 12; i++) {
+            if (date.length() <= 12) {
+                date += " ";
+            } else {
+                return date.substring(0,12);
+            }
+        }
+        return null;
+    }
+    public String fixFlightId (String flightId) {
+
+        for (int i = 0; i < 6; i++) {
+            if (flightId.length() <= 6) {
+                flightId += " ";
+            } else {
+                return flightId.substring(0,6);
+            }
+        }
+        return null;
+    }
 }

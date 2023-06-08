@@ -10,7 +10,7 @@ public class Main {
         RandomAccessFile userFile = new RandomAccessFile("UserInfo.dat", "rw");
         // 38 length
         RandomAccessFile ticketsFile = new RandomAccessFile("TicketInfo.dat", "rw");
-        // 42
+        // 33 length
 
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();

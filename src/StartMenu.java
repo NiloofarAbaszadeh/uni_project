@@ -23,6 +23,7 @@ public class StartMenu {
                     // admin login menu
                     if (ActiveUserName.equals("Admin")) {
                         System.out.println("Enter user Password");
+                        System.out.print(">>>>");
                         String ActiveUserPassword = input.nextLine();
                         if(ActiveUserPassword.equals("admin")) {
                             AdminMenu adminMenu = new AdminMenu();
@@ -44,13 +45,14 @@ public class StartMenu {
                             if (ActiveUserPassword.equals(userFile.readUTF())) {
                                 PassengerMenu passengerMenu = new PassengerMenu();
                                 passengerMenu.mainPassengerMenu(ActiveUserName,input,flightFile,userFile,ticketsFile);
+
                             } else {
                                 System.out.println("not the right password");
                             }
                             checkUserName = false;
                             break;
                         }
-                        if (userFile.getFilePointer()+21 == userFile.length()) {
+                        if (userFile.getFilePointer()+21 == userFile.length() && checkUserName) {
                             System.out.println("""
                                     This user does no exist, you can quite this part or try again.
                                     <1> try again
@@ -58,6 +60,8 @@ public class StartMenu {
                                     """ );
                             check = input.nextInt();
                             input.nextLine();
+                            if (check == 2)
+                                checkUserName = false;
                             break;
                         }
                     }
