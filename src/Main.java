@@ -10,7 +10,7 @@ public class Main {
         RandomAccessFile flightFile = new RandomAccessFile("FlightInfo.dat", "rw");
         // 66 length
         RandomAccessFile userFile = new RandomAccessFile("UserInfo.dat", "rw");
-        // 34 length
+        // 38 length
         RandomAccessFile ticketsFile = new RandomAccessFile("TicketInfo.dat", "rw");
         //
 

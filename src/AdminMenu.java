@@ -260,7 +260,6 @@ public class AdminMenu {
         flightFile.writeInt(flight.getSeat());
         flightFile.writeInt(flight.getOriginalSeats());
         flightFile.writeInt(flight.getPrice());
-
     }
     public String fixOrigin (String origin) {
 
