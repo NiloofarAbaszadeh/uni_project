@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PassengerMenu {
@@ -49,7 +48,6 @@ public class PassengerMenu {
                     addCharge (ActiveUserName,userFile,input);
                     break;
                 case 0:
-                    choise = 0;
                     break;
                 default:
                     System.out.println("pls enter a valid number");
@@ -231,12 +229,8 @@ public class PassengerMenu {
         }
     }
     // Done
-    private void searchFlightTickets(Scanner input, RandomAccessFile flightFile) {
+    private void searchFlightTickets(Scanner input, RandomAccessFile flightFile) throws IOException {
         boolean loopController = true;
-        ArrayList <Flight> tempFlight = new ArrayList<>();
-        for (int i = 0; i < flight.size(); i++) {
-            tempFlight.add(flight.get(i));
-        }
         while (loopController) {
             System.out.println("""
                     what are you looking for ?
@@ -253,58 +247,90 @@ public class PassengerMenu {
             input.nextLine();
             switch (filterSearch) {
                 case 1:
-                System.out.println("pls enter the flight id you want to search for: ");
-                String SearchFlightId = input.nextLine();
-                for (int i = 0; i < tempFlight.size(); i++) {
-                    if (!tempFlight.get(i).getFlightId().equals(SearchFlightId)) {
-                        tempFlight.remove(i);
-                        i--;
-                    }
-                }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
-                    }
+                     System.out.println("pls enter the flight id you want to search for: ");
+                     String SearchFlightId = input.nextLine();
+                     for (int i = 0; i < flightFile.length(); i+= 58) {
+                         flightFile.seek(i);
+                        if (flightFile.readUTF().equals(SearchFlightId)) {
+                             flightFile.seek(flightFile.getFilePointer() - 8);
+                             System.out.print(flightFile.readUTF() + " | ");
+                             System.out.print(flightFile.readUTF() + " | ");
+                             System.out.print(flightFile.readUTF() + " | ");
+                             System.out.print(flightFile.readInt() + " | ");
+                             System.out.print(flightFile.readInt() + " | ");
+                             System.out.print(flightFile.readUTF() + " | ");
+                             System.out.print(flightFile.readInt() + " | ");
+                             System.out.print(flightFile.readInt() + " | ");
+                             System.out.print(flightFile.readInt() + " | ");
+                             System.out.println();
+                             flightFile.seek(flightFile.getFilePointer() - 58);
+                        }
+                     }
                     System.out.println();
                 break;
                 case 2:
                     System.out.println("pls enter the Origin you want to search for: ");
                     String SearchOrigin = input.nextLine();
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        if (!tempFlight.get(i).getOrigin().equals(SearchOrigin)) {
-                            tempFlight.remove(i);
-                            i--;
+                    for (int i = 8; i < flightFile.length(); i+=54) {
+                        flightFile.seek(i);
+                        if (flightFile.readUTF().equals(SearchOrigin)) {
+                            flightFile.seek(flightFile.getFilePointer() - 20);
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.println();
+                            flightFile.seek(flightFile.getFilePointer() - 46);
                         }
-                    }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
                     }
                     System.out.println();
                     break;
                 case 3:
                     System.out.println("pls enter the Destination you want to search for: ");
                     String SearchDestination = input.nextLine();
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        if (!tempFlight.get(i).getDestination().equals(SearchDestination)) {
-                            tempFlight.remove(i);
-                            i--;
+                    for (int i = 20; i < flightFile.length(); i+= 54) {
+                        flightFile.seek(i);
+                        if (flightFile.readUTF().equals(SearchDestination)) {
+                            flightFile.seek(flightFile.getFilePointer() - 32);
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.println();
+                            flightFile.seek(flightFile.getFilePointer() - 34);
                         }
-                    }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
                     }
                     System.out.println();
                     break;
                 case 4:
                     System.out.println("pls enter the Date you want to search for: ");
                     String SearchDate = input.nextLine();
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        if (!tempFlight.get(i).getDate().equals(SearchDate)) {
-                            tempFlight.remove(i);
-                            i--;
+                    for (int i = 40; i < flightFile.length(); i+=52) {
+                        flightFile.seek(i);
+                        if (flightFile.readUTF().equals(SearchDate)) {
+                            flightFile.seek(flightFile.getFilePointer() - 54);
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.println();
+                            flightFile.seek(flightFile.getFilePointer() - 12);
                         }
-                    }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
                     }
                     System.out.println();
                     break;
@@ -315,14 +341,22 @@ public class PassengerMenu {
                     System.out.println("pls enter the Min you want to search for: ");
                     int SearchMin = input.nextInt();
                     input.nextLine();
-                    for (int i = 0; i < flight.size(); i++) {
-                        if (tempFlight.get(i).getHour() != SearchHour || tempFlight.get(i).getMin() != SearchMin) {
-                            tempFlight.remove(i);
-                            i--;
+                    for (int i = 32; i < flightFile.length(); i+=58) {
+                        flightFile.seek(i);
+                        if (flightFile.readInt() == SearchHour && flightFile.readInt() == SearchMin) {
+                            flightFile.seek(flightFile.getFilePointer() - 40);
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.println();
+                            flightFile.seek(flightFile.getFilePointer() - 26);
                         }
-                    }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
                     }
                     System.out.println();
                     break;
@@ -334,14 +368,22 @@ public class PassengerMenu {
                     System.out.println("Max: ");
                     int SearchPriceMax = input.nextInt();
                     input.nextLine();
-                    for (int i = 0; i < flight.size(); i++) {
-                        if (SearchPriceMin < tempFlight.get(i).getPrice() || SearchPriceMax > tempFlight.get(i).getPrice()) {
-                            tempFlight.remove(i);
-                            i--;
+                    for (int i = 62; i < flightFile.length(); i+= 62) {
+                        flightFile.seek(i);
+                        int subPrice = flightFile.readInt();
+                        if (subPrice >= SearchPriceMin && subPrice <= SearchPriceMax) {
+                            flightFile.seek(flightFile.getFilePointer() - 66);
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readUTF() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.print(flightFile.readInt() + " | ");
+                            System.out.println();
                         }
-                    }
-                    for (int i = 0; i < tempFlight.size(); i++) {
-                        System.out.println(tempFlight.get(i));
                     }
                     System.out.println();
                     break;
@@ -355,7 +397,7 @@ public class PassengerMenu {
             }
         }
     }
-
+    // Done
     private void changePassword(String ActiveUserName, Scanner input, RandomAccessFile userFile) throws IOException {
         for (int i = 0; i < userFile.length(); i+=38) {
             userFile.seek(i);

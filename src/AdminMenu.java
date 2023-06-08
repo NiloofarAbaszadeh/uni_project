@@ -88,6 +88,7 @@ public class AdminMenu {
     public void updateFlight (String flightIdSearcher, Scanner input, RandomAccessFile flightFile) throws IOException {
         for (int i = 0; i < flightFile.length(); i+=66) {
             flightFile.seek(i);
+            flightIdSearcher = fixFlightId(flightIdSearcher);
             if (flightIdSearcher.equals(flightFile.readUTF())) {
                 flightFile.seek(i + 54);
                 if (flightFile.readInt() != flightFile.readInt()) {
@@ -176,7 +177,7 @@ public class AdminMenu {
             } else if (flightFile.length() == i) {
                 System.out.println("Flight not found");
             } else {
-                System.out.println("Something`s not right :)");
+
             }
 
         }
@@ -184,52 +185,59 @@ public class AdminMenu {
     public void removeFlight (String flightIdSearcher, RandomAccessFile flightFile) throws IOException {
         for (int i = 0; i < flightFile.length(); i+=66) {
             flightFile.seek(i);
+
+            flightIdSearcher = fixFlightId(flightIdSearcher);
             if (flightIdSearcher.equals(flightFile.readUTF())) {
-                flightFile.seek(i + 54);
+                System.out.println("we are in :)");
+                flightFile.seek(flightFile.getFilePointer() + 46);
                 if (flightFile.readInt() != flightFile.readInt()) {
                     System.out.println("you can`t update this flight because some one has already reserved it");
                     break;
                 }
 
                 // how to delete a flight
-                flightFile.seek(i + 66);
+                flightFile.seek(flightFile.getFilePointer() + 4);
+
                 boolean check = true;
                 while (check) {
                     // read the next flight
-                    if (flightFile.getFilePointer() != (i+66))
-                        flightFile.seek(flightFile.getFilePointer() + 66);
-
-                    if (flightFile.getFilePointer() == flightFile.length())
+                    if (flightFile.getFilePointer() == flightFile.length()) {
+                        flightFile.setLength(flightFile.getFilePointer() - 66);
                         check = false;
+                    } else {
+                        String subFlightId = flightFile.readUTF();
+                        String subOrigin = flightFile.readUTF();
+                        String subDestination = flightFile.readUTF();
+                        int subHour = flightFile.readInt();
+                        int subMin = flightFile.readInt();
+                        String subDate = flightFile.readUTF();
+                        int subSeat = flightFile.readInt();
+                        int subOriginalSeat = flightFile.readInt();
+                        int subPrice = flightFile.readInt();
+                        // write on the last flight
+                        flightFile.seek(flightFile.getFilePointer() - 132);
+                        flightFile.writeUTF(subFlightId);
+                        flightFile.writeUTF(subOrigin);
+                        flightFile.writeUTF(subDestination);
+                        flightFile.writeInt(subHour);
+                        flightFile.writeInt(subMin);
+                        flightFile.writeUTF(subDate);
+                        flightFile.writeInt(subSeat);
+                        flightFile.writeInt(subOriginalSeat);
+                        flightFile.writeInt(subPrice);
+                        flightFile.seek(flightFile.getFilePointer() + 66);
+                        if (flightFile.getFilePointer() == flightFile.length()) {
+                            flightFile.setLength(flightFile.getFilePointer() - 66);
+                            check = false;
+                        }
+                    }
 
-                    String subFlightId = flightFile.readUTF();
-                    String subOrigin = flightFile.readUTF();
-                    String subDestination = flightFile.readUTF();
-                    int subHour = flightFile.readInt();
-                    int subMin = flightFile.readInt();
-                    String subDate = flightFile.readUTF();
-                    int subSeat = flightFile.readInt();
-                    int subOriginalSeat = flightFile.readInt();
-                    int subPrice = flightFile.readInt();
-                    // write on the last flight
-                    flightFile.seek(flightFile.getFilePointer() - 132);
-                    flightFile.writeUTF(subFlightId);
-                    flightFile.writeUTF(subOrigin);
-                    flightFile.writeUTF(subDestination);
-                    flightFile.writeInt(subHour);
-                    flightFile.writeInt(subMin);
-                    flightFile.writeUTF(subDate);
-                    flightFile.writeInt(subSeat);
-                    flightFile.writeInt(subOriginalSeat);
-                    flightFile.writeInt(subPrice);
                 }
-                // todo remove the last flight on the list (ask sage)
-
                 System.out.println("the flight has ben successfully removed");
             } else if (flightFile.length() == i) {
                 System.out.println("Flight not found");
             } else {
-                System.out.println("Something in not right :)");
+
             }
         }
     }
@@ -289,6 +297,17 @@ public class AdminMenu {
                 date += " ";
             } else {
                 return date.substring(0,12);
+            }
+        }
+        return null;
+    }
+    public String fixFlightId (String flightId) {
+
+        for (int i = 0; i < 6; i++) {
+            if (flightId.length() <= 6) {
+                flightId += " ";
+            } else {
+                return flightId.substring(0,6);
             }
         }
         return null;

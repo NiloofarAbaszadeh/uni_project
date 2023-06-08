@@ -1,7 +1,5 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -12,7 +10,7 @@ public class Main {
         RandomAccessFile userFile = new RandomAccessFile("UserInfo.dat", "rw");
         // 38 length
         RandomAccessFile ticketsFile = new RandomAccessFile("TicketInfo.dat", "rw");
-        //
+        // 42
 
         Scanner input = new Scanner(System.in);
         StartMenu startMenu = new StartMenu();

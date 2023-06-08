@@ -22,10 +22,12 @@ public class StartMenu {
                     ActiveUserName = input.nextLine();
                     // admin login menu
                     if (ActiveUserName.equals("Admin")) {
+                        System.out.println("Enter user Password");
                         String ActiveUserPassword = input.nextLine();
                         if(ActiveUserPassword.equals("admin")) {
                             AdminMenu adminMenu = new AdminMenu();
                             adminMenu.mainAdminMenu(input,flightFile);
+                            checkUserName = false;
                         } else {
                             System.out.println("not the right password");
                         }
